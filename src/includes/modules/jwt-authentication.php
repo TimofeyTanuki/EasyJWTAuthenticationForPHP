@@ -26,7 +26,8 @@
 			exit;
 		}
 
-		$JWTAuthenticator = new \Tanuki\Services\JWTAuthenticator('8i^BsP@3-a+*jJk&t7~WY?B:guCU!c#wJDmxMdj^MY?BFxn:;X/LhZC~O>e5R!t+', 'HS256', 900);
+		// Setting the secret when creating an instance of the authenticator class.
+		$JWTAuthenticator = new Tanuki\Services\JWTAuthenticator('8i^BsP@3-a+*jJk&t7~WY?B:guCU!c#wJDmxMdj^MY?BFxn:;X/LhZC~O>e5R!t+', 'HS256', 900);
 		$Payload = $JWTAuthenticator->Decode($Authorization[1], true, $_SERVER['REQUEST_TIME']);
 
 		if ($Payload === null)

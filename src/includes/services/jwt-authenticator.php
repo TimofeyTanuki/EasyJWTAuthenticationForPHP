@@ -23,12 +23,12 @@
 
 		protected function Sign(string $Content) : string
 		{
-			return \hash_hmac(self::Algorithms[$this->Algorithm], $Content, $this->Secret, true);
+			return hash_hmac(self::Algorithms[$this->Algorithm], $Content, $this->Secret, true);
 		}
 
 		protected function Verify(string $Algorithm, string $Content, $Sign) : bool
 		{
-			return \hash_equals(self::UrlEncode(\hash_hmac($Algorithm, $Content, $this->Secret, true)), $Sign);
+			return hash_equals(self::UrlEncode(hash_hmac($Algorithm, $Content, $this->Secret, true)), $Sign);
 		}
 
 		public function Encode(array $Payload = [], int $Timestamp) : string
@@ -41,13 +41,13 @@
 
 			$Payload['exp'] = $Timestamp + $this->Lifetime;
 
-			$Content = self::UrlEncode(\json_encode($Header)) . '.' . self::UrlEncode(\json_encode($Payload));
+			$Content = self::UrlEncode(json_encode($Header)) . '.' . self::UrlEncode(json_encode($Payload));
 			return $Content . '.' . self::UrlEncode($this->Sign($Content));
 		}
 
 		public function Decode(string $Token, bool $VerifySign = false, int $Timestamp = 0) : ?array
 		{
-			$Blocks = \explode('.', $Token, 3);
+			$Blocks = explode('.', $Token, 3);
 
 			if (count($Blocks) < 2)
 				return null;
@@ -83,15 +83,15 @@
 
 		protected static function UrlEncode(string $Raw) : string
 		{
-			return \rtrim(\strtr(\base64_encode($Raw), '+/', '-_'), '=');
+			return rtrim(strtr(base64_encode($Raw), '+/', '-_'), '=');
 		}
 
 		protected static function UrlDecode(string $Encoded) : ?array
 		{
-			$JSON = \base64_decode(\strtr($Encoded, '-_', '+/'));
-			$Decoded = \json_decode($JSON, true);
+			$JSON = base64_decode(strtr($Encoded, '-_', '+/'));
+			$Decoded = json_decode($JSON, true);
 
-			if (\json_last_error() !== \JSON_ERROR_NONE)
+			if (json_last_error() !== \JSON_ERROR_NONE)
 				return null;
 
 			return $Decoded;
